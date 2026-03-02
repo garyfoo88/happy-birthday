@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday MOOT!!</title>
+  <style>
+    /* ─── Reset & base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:   #ff6eb4;
+      --purple: #a855f7;
+      --blue:   #38bdf8;
+      --yellow: #fde68a;
+      --gold:   #f59e0b;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0d0020;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* ─── Star field ────────────────────────────────────────────── */
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--dur) ease-in-out infinite alternate;
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      to { opacity: var(--max-op); transform: scale(1.5); }
+    }
+
+    /* ─── Confetti canvas ───────────────────────────────────────── */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ─── Balloons ──────────────────────────────────────────────── */
+    .balloon-wrap {
+      position: fixed;
+      bottom: -200px;
+      animation: riseUp var(--rise) ease-in forwards, sway 3s ease-in-out infinite alternate;
+      animation-delay: var(--delay), var(--delay);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @keyframes riseUp {
+      to { bottom: 110vh; }
+    }
+
+    @keyframes sway {
+      from { transform: rotate(-8deg); }
+      to   { transform: rotate(8deg); }
+    }
+
+    .balloon {
+      width: var(--size);
+      height: calc(var(--size) * 1.2);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      background: radial-gradient(circle at 35% 30%, white 0%, var(--color) 45%, color-mix(in srgb, var(--color) 60%, black) 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset -10px -10px 30px rgba(0,0,0,.25);
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 12px solid color-mix(in srgb, var(--color) 60%, black);
+    }
+
+    .balloon-string {
+      position: absolute;
+      bottom: -70px;
+      left: 50%;
+      width: 2px;
+      height: 70px;
+      background: rgba(255,255,255,.5);
+      transform-origin: top center;
+    }
+
+    /* ─── Main content ──────────────────────────────────────────── */
+    #content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* ─── Cake emoji ─────────────────────────────────────────────── */
+    .cake {
+      font-size: clamp(4rem, 12vw, 8rem);
+      display: inline-block;
+      animation: cakeBounce 1s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 20px #fde68a);
+    }
+
+    @keyframes cakeBounce {
+      from { transform: scale(1) rotate(-3deg); }
+      to   { transform: scale(1.08) rotate(3deg); }
+    }
+
+    /* ─── "Happy Birthday MOOT!!" text ──────────────────────────── */
+    .hb-text {
+      font-size: clamp(2.4rem, 8vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      background: linear-gradient(90deg,
+        var(--pink), var(--purple), var(--blue), var(--yellow),
+        var(--pink), var(--purple));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite, popIn .8s cubic-bezier(.175,.885,.32,1.275) both;
+      text-shadow: none;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    /* Glow outline trick */
+    .hb-text::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      -webkit-text-fill-color: transparent;
+      filter: blur(18px) brightness(2);
+      background: inherit;
+      -webkit-background-clip: text;
+      background-clip: text;
+      z-index: -1;
+    }
+
+    @keyframes shimmer {
+      to { background-position: -300% 0; }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.5) rotate(-5deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    /* individual letter wiggle */
+    .hb-text .letter {
+      display: inline-block;
+      animation: letterWave 1.5s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 0.07s);
+    }
+
+    @keyframes letterWave {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    /* ─── Sub-text ───────────────────────────────────────────────── */
+    .sub {
+      font-size: clamp(1rem, 3vw, 1.6rem);
+      color: rgba(255,255,255,.85);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      animation: fadeSlideUp 1s ease .6s both;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Sparkle ring ───────────────────────────────────────────── */
+    .sparkle-ring {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      margin: 0 auto;
+    }
+
+    .sparkle-ring .cake {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .spark {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 16px; height: 16px;
+      margin: -8px;
+      animation: orbitSpark var(--orbit-dur) linear infinite;
+      animation-delay: var(--orbit-delay);
+    }
+
+    .spark::before {
+      content: '✦';
+      font-size: 18px;
+      color: var(--spark-color);
+      filter: drop-shadow(0 0 6px var(--spark-color));
+      animation: sparkPulse 1s ease-in-out infinite alternate;
+      animation-delay: var(--orbit-delay);
+    }
+
+    @keyframes orbitSpark {
+      from { transform: rotate(var(--start-angle)) translateX(140px); }
+      to   { transform: rotate(calc(var(--start-angle) + 360deg)) translateX(140px); }
+    }
+
+    @keyframes sparkPulse {
+      to { transform: scale(1.6); opacity: .6; }
+    }
+
+    /* ─── Play button ───────────────────────────────────────────── */
+    #playBtn {
+      margin-top: 2rem;
+      padding: .75rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      box-shadow: 0 4px 20px rgba(168,85,247,.5);
+      transition: transform .15s, box-shadow .15s;
+      animation: fadeSlideUp 1s ease 1.2s both;
+    }
+
+    #playBtn:hover {
+      transform: scale(1.06);
+      box-shadow: 0 6px 28px rgba(168,85,247,.75);
+    }
+
+    #playBtn:active { transform: scale(.97); }
+
+    /* ─── Floating hearts ────────────────────────────────────────── */
+    .heart {
+      position: fixed;
+      font-size: var(--hsize);
+      animation: floatHeart var(--hdur) ease-in forwards;
+      animation-delay: var(--hdelay);
+      opacity: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    @keyframes floatHeart {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-200px) scale(1.4) rotate(15deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Stars -->
+<div id="stars"></div>
+
+<!-- Confetti -->
+<canvas id="confettiCanvas"></canvas>
+
+<!-- Balloons (injected by JS) -->
+
+<!-- Main content -->
+<div id="content">
+  <div class="sparkle-ring" id="sparkleRing">
+    <span class="cake">🎂</span>
+  </div>
+
+  <h1 class="hb-text" id="hbText" data-text="Happy Birthday MOOT!!">
+    <!-- letters injected by JS -->
+  </h1>
+
+  <p class="sub">Wishing you the most amazing day!</p>
+
+  <button id="playBtn">🎵 Play Birthday Song</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   STARS
+══════════════════════════════════════════════════════════════ */
+(function buildStars(){
+  const wrap = document.getElementById('stars');
+  for(let i = 0; i < 200; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + .5;
+    s.style.cssText = `
+      width:${sz}px; height:${sz}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${(Math.random()*3+1).toFixed(1)}s;
+      --max-op:${(Math.random()*.8+.2).toFixed(2)};
+      animation-delay:${(Math.random()*4).toFixed(2)}s;
+    `;
+    wrap.appendChild(s);
+  }
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   LETTER WAVE
+══════════════════════════════════════════════════════════════ */
+(function buildLetters(){
+  const el = document.getElementById('hbText');
+  const text = 'Happy Birthday MOOT!!';
+  let i = 0;
+  el.innerHTML = text.split('').map(ch => {
+    if(ch === ' ') return '<span>&nbsp;</span>';
+    return `<span class="letter" style="--i:${i++}">${ch}</span>`;
+  }).join('');
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   SPARKLE ORBIT RING
+══════════════════════════════════════════════════════════════ */
+(function buildSparks(){
+  const ring = document.getElementById('sparkleRing');
+  const colors = ['#ff6eb4','#a855f7','#38bdf8','#fde68a','#f59e0b','#34d399'];
+  const n = 12;
+  for(let i = 0; i < n; i++){
+    const s = document.createElement('div');
+    s.className = 'spark';
+    s.style.cssText = `
+      --start-angle:${(360/n*i).toFixed(0)}deg;
+      --orbit-dur:${(Math.random()*4+6).toFixed(1)}s;
+      --orbit-delay:-${(Math.random()*6).toFixed(1)}s;
+      --spark-color:${colors[i % colors.length]};
+    `;
+    ring.appendChild(s);
+  }
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   BALLOONS
+══════════════════════════════════════════════════════════════ */
+(function launchBalloons(){
+  const colors = ['#ff6eb4','#a855f7','#38bdf8','#fde68a','#f59e0b','#34d399','#fb923c'];
+  function spawnBalloon(){
+    const wrap = document.createElement('div');
+    wrap.className = 'balloon-wrap';
+    const size = Math.random()*50+60;
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    wrap.style.cssText = `
+      left:${Math.random()*95}%;
+      --size:${size}px;
+      --color:${color};
+      --rise:${(Math.random()*8+10).toFixed(1)}s;
+      --delay:${(Math.random()*4).toFixed(1)}s;
+    `;
+    const bal = document.createElement('div');
+    bal.className = 'balloon';
+    const str = document.createElement('div');
+    str.className = 'balloon-string';
+    wrap.appendChild(bal);
+    wrap.appendChild(str);
+    document.body.appendChild(wrap);
+    wrap.addEventListener('animationend', e => {
+      if(e.animationName === 'riseUp') wrap.remove();
+    });
+  }
+  // initial burst
+  for(let i=0;i<8;i++) setTimeout(spawnBalloon, i*400);
+  // continuous stream
+  setInterval(spawnBalloon, 1800);
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   CONFETTI
+══════════════════════════════════════════════════════════════ */
+(function confetti(){
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, pieces=[];
+
+  function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
+  resize(); addEventListener('resize', resize);
+
+  const COLORS=['#ff6eb4','#a855f7','#38bdf8','#fde68a','#f59e0b','#34d399','#fb923c','#f43f5e'];
+
+  class Piece {
+    constructor(){
+      this.reset(true);
+    }
+    reset(init){
+      this.x = Math.random()*W;
+      this.y = init ? Math.random()*H : -20;
+      this.w = Math.random()*10+5;
+      this.h = Math.random()*6+3;
+      this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+      this.angle = Math.random()*Math.PI*2;
+      this.spin  = (Math.random()-.5)*.2;
+      this.vx    = (Math.random()-.5)*2;
+      this.vy    = Math.random()*2+1;
+      this.alpha = 1;
+    }
+    update(){
+      this.x += this.vx; this.y += this.vy; this.angle += this.spin;
+      if(this.y > H+20) this.reset(false);
+    }
+    draw(){
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle);
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
+      ctx.restore();
+    }
+  }
+
+  for(let i=0;i<180;i++) pieces.push(new Piece());
+
+  (function loop(){
+    ctx.clearRect(0,0,W,H);
+    pieces.forEach(p=>{ p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   FLOATING HEARTS on click / tap
+══════════════════════════════════════════════════════════════ */
+document.addEventListener('click', e => {
+  const emojis = ['❤️','💖','💗','💕','🌟','✨','🎉'];
+  for(let i=0;i<5;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    h.style.cssText = `
+      left:${e.clientX + (Math.random()-0.5)*60}px;
+      top:${e.clientY}px;
+      --hsize:${Math.random()*16+16}px;
+      --hdur:${(Math.random()*1+1.5).toFixed(1)}s;
+      --hdelay:${(Math.random()*.3).toFixed(2)}s;
+    `;
+    document.body.appendChild(h);
+    h.addEventListener('animationend', ()=>h.remove());
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   BIRTHDAY SONG  (Web Audio API — no external files needed)
+   Uses a simple tone-based "Happy Birthday" melody.
+══════════════════════════════════════════════════════════════ */
+const NOTES = {
+  C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00,
+  A4:440.00, B4:493.88, C5:523.25, D5:587.33, E5:659.25,
+  F5:698.46, G5:783.99, A5:880.00
+};
+
+/* "Happy Birthday to You" — simplified two-voice arrangement */
+const melody = [
+  // bar 1
+  ['G4',.375],['G4',.125],['A4',.5],['G4',.5],['C5',.5],['B4',1],
+  // bar 2
+  ['G4',.375],['G4',.125],['A4',.5],['G4',.5],['D5',.5],['C5',1],
+  // bar 3
+  ['G4',.375],['G4',.125],['G5',.5],['E5',.5],['C5',.5],['B4',.5],['A4',1],
+  // bar 4
+  ['F5',.375],['F5',.125],['E5',.5],['C5',.5],['D5',.5],['C5',1.5],
+];
+
+let audioCtx = null;
+let songPlaying = false;
+let songNodes = [];
+
+function stopSong(){
+  songNodes.forEach(n => { try{ n.stop(); }catch(e){} });
+  songNodes = [];
+  songPlaying = false;
+  document.getElementById('playBtn').textContent = '🎵 Play Birthday Song';
+}
+
+function playSong(){
+  if(songPlaying){ stopSong(); return; }
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+  const tempo = 0.55; // seconds per beat
+  let t = audioCtx.currentTime + 0.1;
+  songPlaying = true;
+  document.getElementById('playBtn').textContent = '⏹ Stop';
+
+  melody.forEach(([note, beats]) => {
+    const freq = NOTES[note];
+    const dur  = beats * tempo;
+
+    /* Main oscillator — slightly detuned for warmth */
+    [0, 5, -5].forEach((detune, idx) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 2200;
+
+      osc.type = idx === 0 ? 'triangle' : 'sine';
+      osc.frequency.value = freq;
+      osc.detune.value = detune;
+
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(idx===0?.22:.07, t + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur - 0.04);
+
+      osc.connect(filter).connect(gain).connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + dur);
+      songNodes.push(osc);
+    });
+
+    /* Soft harmony (perfect fifth above) */
+    const harmOsc  = audioCtx.createOscillator();
+    const harmGain = audioCtx.createGain();
+    harmOsc.type = 'sine';
+    harmOsc.frequency.value = freq * 1.5;
+    harmGain.gain.setValueAtTime(0, t);
+    harmGain.gain.linearRampToValueAtTime(0.04, t + 0.05);
+    harmGain.gain.exponentialRampToValueAtTime(0.001, t + dur - 0.04);
+    harmOsc.connect(harmGain).connect(audioCtx.destination);
+    harmOsc.start(t);
+    harmOsc.stop(t + dur);
+    songNodes.push(harmOsc);
+
+    t += dur;
+  });
+
+  /* Auto-reset button when song ends */
+  setTimeout(() => {
+    if(songPlaying){
+      songPlaying = false;
+      document.getElementById('playBtn').textContent = '🎵 Play Birthday Song';
+    }
+  }, (t - audioCtx.currentTime + 0.3) * 1000);
+}
+
+document.getElementById('playBtn').addEventListener('click', playSong);
+</script>
+</body>
+</html>
