@@ -136,17 +136,8 @@
       font-weight: 900;
       letter-spacing: 2px;
       line-height: 1.1;
-      background: linear-gradient(90deg,
-        var(--pink), var(--purple), var(--blue), var(--yellow),
-        var(--pink), var(--purple));
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 3s linear infinite, popIn .8s cubic-bezier(.175,.885,.32,1.275) both;
       margin: 1rem 0;
-      position: relative;
-      filter: drop-shadow(0 0 8px rgba(168,85,247,0.7)) drop-shadow(0 0 16px rgba(255,110,180,0.5));
+      animation: popIn .8s cubic-bezier(.175,.885,.32,1.275) both;
     }
 
     @keyframes shimmer {
@@ -158,11 +149,19 @@
       to   { opacity: 1; transform: scale(1) rotate(0); }
     }
 
-    /* individual letter wiggle */
+    /* individual letter wiggle + gradient */
     .hb-text .letter {
       display: inline-block;
-      animation: letterWave 1.5s ease-in-out infinite;
-      animation-delay: calc(var(--i) * 0.07s);
+      background: linear-gradient(90deg,
+        var(--pink), var(--purple), var(--blue), var(--yellow),
+        var(--pink), var(--purple));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 6px rgba(168,85,247,0.8));
+      animation: letterWave 1.5s ease-in-out infinite, shimmer 3s linear infinite;
+      animation-delay: calc(var(--i) * 0.07s), calc(var(--i) * -0.2s);
     }
 
     @keyframes letterWave {
