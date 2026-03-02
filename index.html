@@ -149,6 +149,12 @@
       to   { opacity: 1; transform: scale(1) rotate(0); }
     }
 
+    /* Each line is its own block, no mid-word breaks */
+    .hb-line {
+      display: block;
+      white-space: nowrap;
+    }
+
     /* individual letter wiggle + gradient */
     .hb-text .letter {
       display: inline-block;
@@ -317,11 +323,14 @@
 ══════════════════════════════════════════════════════════════ */
 (function buildLetters(){
   const el = document.getElementById('hbText');
-  const text = 'Happy Birthday MOOT!!';
+  const lines = ['Happy Birthday', 'MOOT!!'];
   let i = 0;
-  el.innerHTML = text.split('').map(ch => {
-    if(ch === ' ') return '<span>&nbsp;</span>';
-    return `<span class="letter" style="--i:${i++}">${ch}</span>`;
+  el.innerHTML = lines.map(line => {
+    const spans = line.split('').map(ch => {
+      if(ch === ' ') return '<span>&nbsp;</span>';
+      return `<span class="letter" style="--i:${i++}">${ch}</span>`;
+    }).join('');
+    return `<div class="hb-line">${spans}</div>`;
   }).join('');
 })();
 
