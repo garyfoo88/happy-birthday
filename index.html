@@ -144,22 +144,9 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shimmer 3s linear infinite, popIn .8s cubic-bezier(.175,.885,.32,1.275) both;
-      text-shadow: none;
       margin: 1rem 0;
       position: relative;
-    }
-
-    /* Glow outline trick */
-    .hb-text::after {
-      content: attr(data-text);
-      position: absolute;
-      inset: 0;
-      -webkit-text-fill-color: transparent;
-      filter: blur(18px) brightness(2);
-      background: inherit;
-      -webkit-background-clip: text;
-      background-clip: text;
-      z-index: -1;
+      filter: drop-shadow(0 0 8px rgba(168,85,247,0.7)) drop-shadow(0 0 16px rgba(255,110,180,0.5));
     }
 
     @keyframes shimmer {
